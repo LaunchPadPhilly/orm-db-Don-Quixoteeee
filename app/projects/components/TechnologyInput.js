@@ -1,136 +1,106 @@
-// TODO: Students will implement this component
-// This is an advanced component building exercise
+'use client'
 
-// Component Requirements:
-// 1. Create a component that accepts { technologies, onChange, error } props
-// 2. Allow users to type in a technology name and add it to the list
-// 3. Provide quick-add buttons for common technologies
-// 4. Display selected technologies as removable tags
-// 5. Prevent duplicate technologies
-// 6. Support both keyboard (Enter) and button (Add) interactions
-// 7. Handle error states with visual feedback
+import { useState } from 'react'
 
-// Learning Objectives:
-// - Advanced React state management
-// - Array manipulation patterns
-// - User input handling
-// - Conditional styling
-// - Accessibility considerations
-// - Component prop patterns
+const QUICK_ADD_TECHNOLOGIES = [
+  'React',
+  'Next.js',
+  'JavaScript',
+  'TypeScript',
+  'Tailwind CSS',
+  'Node.js',
+  'PostgreSQL',
+  'HTML',
+  'CSS',
+  'Git'
+]
 
-// Suggested Technologies for Quick-Add:
-// ['JavaScript', 'TypeScript', 'React', 'Next.js', 'Node.js', 'Express',
-//  'HTML', 'CSS', 'Tailwind CSS', 'Bootstrap', 'Python', 'Java',
-//  'PostgreSQL', 'MongoDB', 'MySQL', 'Prisma', 'GraphQL', 'REST API',
-//  'Git', 'Docker', 'AWS', 'Vercel', 'Figma', 'Photoshop']
+export default function TechnologyInput({ technologies = [], onChange, error }) {
+  const [input, setInput] = useState('')
 
-// Implementation Hints:
-// - Use 'use client' directive
-// - Manage local input state with useState
-// - Use filter() to remove technologies
-// - Use includes() to check for duplicates
-// - Handle keyPress event for Enter key
-// - Style error states with conditional classes
-
-"use client";
-import { useState } from "react";
-
-const QUICK_TECHS = [
-  "JavaScript", "TypeScript", "React", "Next.js", "Node.js", "Express",
-  "HTML", "CSS", "Tailwind CSS", "Bootstrap", "Python", "Java",
-  "PostgreSQL", "MongoDB", "MySQL", "Prisma", "GraphQL", "REST API",
-  "Git", "Docker", "AWS", "Vercel", "Figma", "Photoshop"
-];
-
-export default function TechnologyInput({ value = [], onChange, error }) {
-  const [input, setInput] = useState("");
-  const [localError, setLocalError] = useState("");
-
-  const addTech = (tech) => {
-    const techTrimmed = tech.trim();
-    if (!techTrimmed) return;
-    if (value.includes(techTrimmed)) {
-      setLocalError("Technology already added.");
-      return;
+  const handleAdd = (tech) => {
+    if (tech && !technologies.includes(tech)) {
+      onChange([...technologies, tech])
+      setInput('')
     }
-    setLocalError("");
-    onChange([...value, techTrimmed]);
-    setInput("");
-  };
-
-  const handleInputChange = (e) => {
-    setInput(e.target.value);
-    setLocalError("");
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTech(input);
-    }
-  };
-
-  const handleAddClick = () => {
-    addTech(input);
-  };
+  }
 
   const handleRemove = (tech) => {
-    onChange(value.filter((t) => t !== tech));
-    setLocalError("");
-  };
+    onChange(technologies.filter(t => t !== tech))
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAdd(input.trim())
+    }
+  }
 
   return (
-    <div>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {value.map((tech) => (
-          <span key={tech} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center gap-2">
-            {tech}
-            <button
-              type="button"
-              aria-label={`Remove ${tech}`}
-              className="ml-1 text-blue-500 hover:text-red-500"
-              onClick={() => handleRemove(tech)}
-            >
-              &times;
-            </button>
-          </span>
+    <div className="space-y-3">
+      {/* Quick add buttons */}
+      <div className="flex flex-wrap gap-2">
+        {QUICK_ADD_TECHNOLOGIES.map((tech) => (
+          <button
+            key={tech}
+            type="button"
+            onClick={() => handleAdd(tech)}
+            disabled={technologies.includes(tech)}
+            className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+              technologies.includes(tech)
+                ? 'bg-blue-200 text-blue-800 cursor-not-allowed'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            }`}
+          >
+            + {tech}
+          </button>
         ))}
       </div>
-      <div className="flex gap-2 mb-2">
+
+      {/* Custom input */}
+      <div className="flex gap-2">
         <input
           type="text"
           value={input}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          placeholder="Add technology..."
-          className={`border rounded px-3 py-2 flex-1 ${error || localError ? "border-red-500" : "border-gray-300"}`}
-          aria-label="Technology name"
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="Or type a custom technology..."
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
         />
         <button
           type="button"
-          className="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
-          onClick={handleAddClick}
+          onClick={() => handleAdd(input.trim())}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           Add
         </button>
       </div>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {QUICK_TECHS.map((tech) => (
-          <button
-            type="button"
-            key={tech}
-            className={`px-2 py-1 rounded border text-sm ${value.includes(tech) ? "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed" : "bg-gray-100 hover:bg-blue-200 border-gray-300 text-blue-700"}`}
-            onClick={() => !value.includes(tech) && addTech(tech)}
-            disabled={value.includes(tech)}
-          >
-            {tech}
-          </button>
-        ))}
-      </div>
-      {(error || localError) && (
-        <div className="text-red-500 text-sm mt-1">{error || localError}</div>
+
+      {/* Selected technologies */}
+      {technologies.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-2">
+          {technologies.map((tech) => (
+            <div
+              key={tech}
+              className="bg-blue-100 text-blue-900 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2"
+            >
+              {tech}
+              <button
+                type="button"
+                onClick={() => handleRemove(tech)}
+                className="hover:text-blue-700 font-bold"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Error message */}
+      {error && (
+        <p className="text-red-600 text-sm">{error}</p>
       )}
     </div>
-  );
+  )
 }
-// ...existing code...

@@ -53,7 +53,6 @@ describe('Week 1 Portfolio - Component Tests', () => {
     expect(exists, 'Footer component is required').toBe(true)
   })
 
-
   it('should have ProjectForm component file', () => {
     const projectFormPath = path.join(process.cwd(), 'app/projects/components/ProjectForm.js')
     const exists = fs.existsSync(projectFormPath)

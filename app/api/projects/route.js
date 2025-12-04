@@ -8,8 +8,7 @@ export async function GET() {
     const projects = await prisma.project.findMany({
       orderBy: { createdAt: 'desc' }
     });
-    // Always return 200, even if empty
-    return NextResponse.json(projects, { status: 200 });
+    return NextResponse.json(projects);
   } catch (error) {
     console.error('Error fetching projects:', error);
     return NextResponse.json(
@@ -24,7 +23,7 @@ export async function POST(request) {
     const { title, description, imageUrl, projectUrl, githubUrl, technologies } = body;
 
     // Validate required fields
-    if (!title || !description || !technologies) {
+    if (!title || !description || !technologies || technologies.length === 0) {
       return NextResponse.json(
         { error: 'Title, description, and technologies are required' },
         { status: 400 }
@@ -35,9 +34,9 @@ export async function POST(request) {
       data: {
         title,
         description,
-        imageUrl: imageUrl ?? null,
-        projectUrl: projectUrl ?? null,
-        githubUrl: githubUrl ?? null,
+        imageUrl,
+        projectUrl,
+        githubUrl,
         technologies
       }
     });
