@@ -66,7 +66,12 @@ export default function Projects() {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {projects.length > 0 ? (
+          {isLoading ? (
+            // Loading state: simple skeleton cards
+            Array.from({ length: 6 }).map((_, idx) => (
+              <div key={idx} className="animate-pulse bg-white rounded-xl shadow-md overflow-hidden p-6 h-64" />
+            ))
+          ) : projects.length > 0 ? (
             projects.map((project) => (
               <Link 
                 key={project.id} 
