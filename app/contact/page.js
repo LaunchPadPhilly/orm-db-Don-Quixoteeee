@@ -5,29 +5,29 @@ export default function Contact() {
     {
       icon: '📧',
       title: 'Email',
-      value: 'chris@example.com',
-      href: 'mailto:chris@example.com',
+      value: 'zakaiballard@gmail.com',
+      href: 'zakaiballard.com',
       description: 'Feel free to send me an email anytime!'
     },
     {
       icon: '💼',
       title: 'LinkedIn',
-      value: 'linkedin.com/in/chriskeels',
-      href: 'https://linkedin.com/in/chriskeels',
+      value: 'linkedin.com/in/zakaiballard',
+      href: 'https://www.linkedin.com/in/zakai-ballard-952158319/',
       description: 'Connect with me on LinkedIn!'
     },
     {
       icon: '💻',
       title: 'GitHub',
-      value: 'github.com/chriskeels',
-      href: 'https://github.com/chriskeels',
+      value: 'github.com/Don-Quixoteeee',
+      href: 'https://github.com/Don-Quixoteeee',
       description: 'Check out my code and projects!'
     },
     {
       icon: '🐦',
       title: 'Twitter',
-      value: '@chriskeels',
-      href: 'https://twitter.com/chriskeels',
+      value: '@alusisready',
+      href: 'https://twitter.com/aluisready',
       description: 'Follow for web dev updates!'
     }
   ]
