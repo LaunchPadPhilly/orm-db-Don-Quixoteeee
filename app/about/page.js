@@ -20,18 +20,19 @@ export default function About() {
           {/* Profile photo */}
           <div className="md:col-span-1 flex justify-center">
             <Image 
-              src="https://ui-avatars.com/api/?name=Chris+Keels&size=300&background=3b82f6&color=ffffff&bold=true"
-              alt="Chris Keels profile photo"
+              src="/profile.jpg"
+              alt="Zakai profile photo"
               width={300}
               height={300}
               className="rounded-full shadow-lg"
+              unoptimized
             />
           </div>
           
           {/* Bio */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-xl shadow-md p-8">
-              <h2 className="text-3xl font-bold mb-4 text-gray-900">Hi, I'm Chris!</h2>
+              <h2 className="text-3xl font-bold mb-4 text-gray-900">Hi, I'm Zakai!</h2>
               <p className="text-lg text-gray-700 leading-relaxed mb-4">
                 I'm a passionate developer learning web technologies. I love building interactive 
                 websites and solving problems with code. I'm currently focused on learning Next.js 

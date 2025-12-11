@@ -1,7 +1,42 @@
-import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import prisma from '../../../../lib/prisma'
+import { NextResponse } from 'next/server'
 
-const prisma = new PrismaClient();
+// Server-side sample projects (fallback for single-project requests)
+const SAMPLE_PROJECTS = [
+  {
+    id: 1,
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
+    imageUrl: '/project1.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['Next.js', 'Tailwind CSS', 'React'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+ {
+    id: 2,
+    title: 'Movie Database',
+    description: 'A reactive movie database with search functionality.',
+    imageUrl: '/project2.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    title: 'Aero Tech',
+    description: 'A responsive weather dashboard using external APIs.',
+    imageUrl: '/project3.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['JavaScript', 'APIs', 'Chart.js'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+]
 export async function GET(request, { params }) {
   try {
     const id = parseInt(params.id);
@@ -17,6 +52,12 @@ export async function GET(request, { params }) {
     });
 
     if (!project) {
+      // If record not found in DB, try to return a sample project
+      const fallback = SAMPLE_PROJECTS.find(p => p.id === id) || null
+      if (fallback) {
+        return NextResponse.json(fallback)
+      }
+
       return NextResponse.json(
         { error: 'Project not found' },
         { status: 404 }
@@ -26,6 +67,13 @@ export async function GET(request, { params }) {
     return NextResponse.json(project);
   } catch (error) {
     console.error('Error fetching project:', error);
+    // On server-side errors (DB down, etc.) return a sample project when possible
+    const id = parseInt(params.id)
+    const fallback = SAMPLE_PROJECTS.find(p => p.id === id) || null
+    if (fallback) {
+      return NextResponse.json(fallback)
+    }
+
     return NextResponse.json(
       { error: 'Failed to fetch project' },
       { status: 500 }

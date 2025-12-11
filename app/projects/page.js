@@ -1,9 +1,41 @@
+
 'use client'
 
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import ProjectForm from './components/ProjectForm'
+
+// Local fallback data used when the API or database is unavailable.
+const SAMPLE_PROJECTS = [
+  {
+    id: 1,
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
+    imageUrl: '/project1.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['Next.js', 'Tailwind CSS', 'React']
+  },
+  {
+    id: 2,
+    title: 'Move Database',
+    description: 'A reactive movie database with search functionality.',
+    imageUrl: '/project2.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL']
+  },
+  {
+    id: 3,
+    title: 'Aero Tech',
+    description: 'A responsive weather dashboard using external APIs.',
+    imageUrl: '/project3.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['JavaScript', 'APIs', 'Chart.js']
+  }
+]
 
 export default function Projects() {
   const [projects, setProjects] = useState([])
@@ -21,13 +53,25 @@ export default function Projects() {
         cache: 'no-store'
       })
       if (!res.ok) {
-        throw new Error('Failed to fetch projects')
+        // Log the error and fall back to local sample data instead of throwing
+        console.error('Failed to fetch projects, using fallback data', res.status)
+        setProjects(SAMPLE_PROJECTS)
+        return
       }
+
       const data = await res.json()
-      setProjects(data)
+
+      // Ensure data is an array before setting state
+      if (Array.isArray(data)) {
+        setProjects(data)
+      } else {
+        console.warn('Unexpected projects response, using fallback data')
+        setProjects(SAMPLE_PROJECTS)
+      }
     } catch (error) {
       console.error('Error fetching projects:', error)
-      setProjects([])
+      // Use fallback sample data when network or server errors occur
+      setProjects(SAMPLE_PROJECTS)
     } finally {
       setIsLoading(false)
     }
@@ -66,7 +110,12 @@ export default function Projects() {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {projects.length > 0 ? (
+          {isLoading ? (
+            // Loading state: simple skeleton cards
+            Array.from({ length: 6 }).map((_, idx) => (
+              <div key={idx} className="animate-pulse bg-white rounded-xl shadow-md overflow-hidden p-6 h-64" />
+            ))
+          ) : projects.length > 0 ? (
             projects.map((project) => (
               <Link 
                 key={project.id} 
@@ -79,8 +128,7 @@ export default function Projects() {
                       src={project.imageUrl}
                       alt={project.title}
                       fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
-                    />
+                      className="object-cover hover:scale-105 transition-transform duration-300"                      unoptimized                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-cyan-100">
                       <span className="text-gray-400 text-sm">No image</span>

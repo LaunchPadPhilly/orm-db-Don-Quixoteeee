@@ -5,12 +5,6 @@ import TechnologyInput from './TechnologyInput'
 
 const URL_REGEX = /^https?:\/\/.+\..+/
 
-"use client";
-import { useState } from "react";
-import TechnologyInput from "./TechnologyInput";
-
-const urlRegex = /^https?:\/\/.+\..+/;
-
 export default function ProjectForm({ onSubmit, onCancel, isOpen }) {
   const [formData, setFormData] = useState({
     title: '',

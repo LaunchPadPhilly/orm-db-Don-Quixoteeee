@@ -1,7 +1,42 @@
-import { PrismaClient } from '@prisma/client';
-import { NextResponse } from 'next/server';
+import prisma from '../../../lib/prisma'
+import { NextResponse } from 'next/server'
 
-const prisma = new PrismaClient();
+// Server-side sample data fallback (used when DB is unreachable)
+const SAMPLE_PROJECTS = [
+  {
+    id: 1,
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
+    imageUrl: '/project1.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['Next.js', 'Tailwind CSS', 'React'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: 'Movie Database',
+    description: 'A reactive movie database with search functionality.',
+    imageUrl: '/project2.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    title: 'Aero Tech',
+    description: 'A responsive weather dashboard using external APIs.',
+    imageUrl: '/project3.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['JavaScript', 'APIs', 'Chart.js'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+]
 
 export async function GET() {
   try {
@@ -11,10 +46,9 @@ export async function GET() {
     return NextResponse.json(projects);
   } catch (error) {
     console.error('Error fetching projects:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch projects' },
-      { status: 500 }
-    );
+    // If the database or Prisma is not available, return a safe sample payload
+    // with HTTP 200 so the frontend can render predictable content.
+    return NextResponse.json(SAMPLE_PROJECTS, { status: 200 });
   }
 }
 export async function POST(request) {

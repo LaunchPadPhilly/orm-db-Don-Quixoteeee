@@ -7,7 +7,7 @@ export default function Home() {
         <div className="max-w-4xl w-full text-center">
           <div className="mb-12">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-blue-600">
-              Hi, I'm Chris K!
+              Hi, I'm Zakai B!
             </h1>
             
             <p className="text-lg sm:text-xl text-gray-700 mb-12 leading-relaxed">

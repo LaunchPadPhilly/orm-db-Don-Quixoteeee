@@ -1,6 +1,42 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+// Local fallback projects (used when API/database is unavailable)
+const SAMPLE_PROJECTS = [
+  {
+    id: 1,
+    title: 'Portfolio Website',
+    description: 'A personal portfolio website built with Next.js and Tailwind CSS.',
+    imageUrl: '/project1.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['Next.js', 'Tailwind CSS', 'React'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 2,
+    title: 'Task Manager App',
+    description: 'A full-stack task management application with user authentication.',
+    imageUrl: '/project2.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    title: 'Aero Tech',
+    description: 'A responsive weather dashboard using external APIs.',
+    imageUrl: '/project3.jpg',
+    projectUrl: null,
+    githubUrl: null,
+    technologies: ['JavaScript', 'APIs', 'Chart.js'],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+]
 
 async function getProject(id) {
   try {
@@ -8,15 +44,28 @@ async function getProject(id) {
       cache: 'no-store'
     })
     if (!res.ok) {
+      // If API returns 404, try to fall back to local sample project
       if (res.status === 404) {
-        return null
+        const pid = parseInt(id, 10)
+        const fallback = SAMPLE_PROJECTS.find(p => p.id === pid) || null
+        return fallback
       }
-      throw new Error('Failed to fetch project')
+
+      console.error('Failed to fetch project, status:', res.status)
+      // As a fallback, try to return a local sample project by id
+      const pid = parseInt(id, 10)
+      const fallback = SAMPLE_PROJECTS.find(p => p.id === pid) || null
+      return fallback
     }
-    return await res.json()
+
+    const data = await res.json()
+    return data
   } catch (error) {
     console.error('Error fetching project:', error)
-    throw error
+    // On network or server error, return sample project if available
+    const pid = parseInt(id, 10)
+    const fallback = SAMPLE_PROJECTS.find(p => p.id === pid) || null
+    return fallback
   }
 }
 
@@ -59,6 +108,7 @@ export default async function ProjectDetail({ params }) {
               width={800}
               height={400}
               className="w-full rounded-lg shadow-lg"
+              unoptimized
             />
           </div>
         )}
